@@ -10,7 +10,6 @@
                     {{ prof.name }} ({{prof.id}})
                 </option>                
             </select>
-            <div>выбран: {{profile}}</div>
         </div>
     </div>
 </template>
@@ -34,7 +33,7 @@ export default {
     methods: {
         getProject(){
             axios.get('/api/integrations/'+ this.slug).then(response => {
-                this.integr = response.data[0];
+                this.integr = response.data;
                 this.name = this.integr.name
                 this.profile = this.integr.profile
                 console.log(this.profile)

@@ -72,7 +72,7 @@ class IntegrationController extends Controller
      */
     public function show($slug)
     {
-        $integration = Integration::where('slug', $slug)->get();
+        $integration = Integration::where('slug', $slug)->firstOrFail();
 
         if(!$integration){
             return response()->json([
