@@ -32,7 +32,7 @@
                 <div class="report_main_indicators">
                     <div class="indictr">
                         <div class="indictr_name">Визиты</div>
-                        <div class="indictr_int">812</div>
+                        <div class="indictr_int">{{report.totals[0]}}</div>
                     </div>
                     <div class="indictr">
                         <div class="indictr_name">Просмотры</div>
