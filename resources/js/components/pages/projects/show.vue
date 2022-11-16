@@ -23,6 +23,11 @@
                 <button type="button" class="btn btn-success"  @click="getReport()">Получить отчет</button>
            </div>
         </div>
+        <div class="text-center" v-if="load">
+            <div class="spinner-border text-info" style="width: 5rem; height: 5rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
         <div class="report mt-5" v-if="report">
             <div class="report_title">Отчет по рекламе</div>
             <div class="report_date">Данные сформированы за период {{start_date}} - {{finish_date}}</div>
@@ -30,29 +35,29 @@
             <div class="report_main">
                 <div class="report_title">Яндекс Метрика. Трафик. Основные показатели</div>
                 <div class="report_main_indicators">
-                    <div class="indictr">
+                    <div class="indictr card">
                         <div class="indictr_name">Визиты</div>
-                        <div class="indictr_int">{{report.totals[0]}}</div>
+                        <div class="indictr_int">{{report[0][0]}}</div>
                     </div>
-                    <div class="indictr">
+                    <div class="indictr card">
                         <div class="indictr_name">Просмотры</div>
-                        <div class="indictr_int">812</div>
+                        <div class="indictr_int">{{report[1][0]}}</div>
                     </div>
-                    <div class="indictr">
+                    <div class="indictr card">
                         <div class="indictr_name">Глубина просмотра</div>
-                        <div class="indictr_int">812</div>
+                        <div class="indictr_int">{{report[2][0].toFixed(1)}}</div>
                     </div>
-                    <div class="indictr">
+                    <div class="indictr card">
                         <div class="indictr_name">Показатель отказов</div>
-                        <div class="indictr_int">812</div>
+                        <div class="indictr_int">{{report[3][0].toFixed(1)}} %</div>
                     </div>
-                    <div class="indictr">
+                    <div class="indictr card">
                         <div class="indictr_name">Время на сайте</div>
-                        <div class="indictr_int">812</div>
+                        <div class="indictr_int">{{report[4][0].toFixed(0)}} сек.</div>
                     </div>
-                    <div class="indictr">
+                    <div class="indictr card">
                         <div class="indictr_name">Новые посетители</div>
-                        <div class="indictr_int">812</div>
+                        <div class="indictr_int">{{report[5][0].toFixed(1)}} %</div>
                     </div>
                 </div>
                 <div class="report_title">Яндекс Метрика. Конверсии</div>
@@ -83,61 +88,45 @@
                 </div>
                 <div class="indictr_name">Целевые визиты</div>
                 <div class="report_main_indicators">
-                    <div class="indictr">
-                        <div class="indictr_name">Клик по номеру телефона</div>
-                        <div class="indictr_int">812</div>
-                    </div>
-                    <div class="indictr">
-                        <div class="indictr_name">Клик по кнопке whatsapp </div>
-                        <div class="indictr_int">812</div>
-                    </div>
-                    <div class="indictr">
-                        <div class="indictr_name">Отправка формы</div>
-                        <div class="indictr_int">812</div>
+                    <div class="indictr card" v-for="goal of goals" :key="goal.id">
+                        <div class="indictr_name">{{goal.name}}</div>
+                        <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
                     </div>
                 </div>
                 <div class="indictr_name">Конверсии, %</div>
                 <div class="report_main_indicators">
-                    <div class="indictr">
-                        <div class="indictr_name">Клик по номеру телефона</div>
-                        <div class="indictr_int">812</div>
-                    </div>
-                    <div class="indictr">
-                        <div class="indictr_name">Клик по кнопке whatsapp </div>
-                        <div class="indictr_int">812</div>
-                    </div>
-                    <div class="indictr">
-                        <div class="indictr_name">Отправка формы</div>
-                        <div class="indictr_int">812</div>
+                    <div class="indictr card" v-for="goal of goals" :key="goal.id">
+                        <div class="indictr_name">{{goal.name}}</div>
+                        <div class="indictr_int">{{goalsConvs[goals.indexOf(goal)].toFixed(1)}} %</div>
                     </div>
                 </div>
                 <div class="report_title">Яндекс Метрика. Источники трафика</div>
                 <div class="report_stolb">
                     <div class="report_stolb_diagram">Diagramma</div>
                     <div class="report_main_indicators">
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Facebook (Переходыпорекламе)</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Google Ads (Переходыпорекламе)</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">crp.worksection.com (Переходыпоссылкам на сайтах)</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Google (Переходыизпоисковых систем)</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">link.2gis.ru (Переходыпоссылкам на сайтах)</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">l.wl.co</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>                    
                     </div>
                 </div>
@@ -145,17 +134,17 @@
                 <div class="report_pipe">
                     <div class="report_pipe_diagram">Diagramma</div>
                     <div class="report_main_indicators">
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Смартфоны</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">ПК</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Планшеты</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>                   
                     </div>
                 </div>
@@ -163,21 +152,21 @@
                 <div class="report_big_stolb">
                     <div class="report_big_stolb_diagramm">diagramma</div>
                     <div class="report_main_indicators">
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Глубина просмотров</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Время на сайте </div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Показатель отказов</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>      
-                        <div class="indictr">
+                        <div class="indictr card">
                             <div class="indictr_name">Новые посетители, %</div>
-                            <div class="indictr_int">812</div>
+                            <div class="indictr_int">0</div>
                         </div>               
                     </div>
                 </div>
@@ -202,7 +191,12 @@ export default {
             report:null,
             name: null,
             load: true,
-            errored: false
+            errored: false,
+            goals:[],
+            goals_stirng:'',
+            goalVisits_stirng:'',
+            goalsConvs:[],
+            goalsVisits:[],
         }
     },
     methods: {
@@ -241,19 +235,78 @@ export default {
                 console.log(err)
             })
         },
+        getGoals(){
+            this.goals = []
+            this.goals_stirng = ''
+            this.goalVisits_stirng = ''
+            axios.get(`https://api-metrika.yandex.net/management/v1/counter/${this.profile}/goals`, {
+                headers: {
+                    'Authorization': `OAuth ${this.integr.auth_token}`,
+                }
+            }).then(res => {
+                this.goals = res.data.goals
+                for(let i = 0; i < this.goals.length; i++){
+                    if(i == 0){
+                        this.goals_stirng += `ym:s:goal${this.goals[i].id}conversionRate`
+                        this.goalVisits_stirng += `ym:s:goal${this.goals[i].id}visits`
+                    }else{
+                        this.goals_stirng += `,ym:s:goal${this.goals[i].id}conversionRate`
+                        this.goalVisits_stirng += `,ym:s:goal${this.goals[i].id}visits`
+                    }                    
+                }
+                console.log(this.goalVisits_stirng)
+                this.getGoalVisits()
+            }).catch(err => console.log(err))
+        },
+        getGoalVisits(){
+            this.goalsVisits = []
+            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goalVisits_stirng}&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+                headers: {
+                    'Authorization': `OAuth ${this.integr.auth_token}`,
+                }
+            }).then(res => {
+                this.goalsVisits = res.data.totals
+                console.log(this.goalsVisits)
+            }).catch(err=> {
+                console.log(err)
+            })
+
+            this.getConvers()
+        },
+        getConvers(){
+            this.goalsConvs = []
+            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goals_stirng}&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+                headers: {
+                    'Authorization': `OAuth ${this.integr.auth_token}`,
+                }
+            }).then(res => {
+                this.goalsConvs = res.data.totals
+            }).catch(err=> {
+                console.log(err)
+            })
+        },
         getReport(){
             if(!this.start_date || !this.finish_date){
                 alert('Укажите дату')
             }
             else{
-                axios.get(`https://api-metrika.yandex.net/stat/v1/data?ids=${this.profile}&metrics=ym:s:visits&date1=${this.start_date}&date2=${this.finish_date}`, {
+                
+                this.report= null,
+                this.load = true,
+
+                this.getGoals()
+                
+                axios.get(`https://api-metrika.yandex.net/stat/v1/data/bytime?metrics=ym:s:visits,ym:s:pageviews,ym:s:pageDepth,ym:s:bounceRate,ym:s:avgVisitDurationSeconds,ym:s:newUserVisitsPercentage&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
                 }).then(res =>{
-                    console.log(res.data)
-                    this.report = res.data
+                    // console.log(res.data)
+                    this.report = res.data.totals
                 }).catch(err => console.log(err))
+                .finally(()=>{
+                    this.load = false
+                })
             }
             
         }
@@ -266,6 +319,7 @@ export default {
 <style>
     .report_title{
             font-size: 22px;
+            font-weight: 700;
         }
         .report_date{
             font-size: 18px;
@@ -277,14 +331,15 @@ export default {
         .report_main_indicators{
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: space-around;
             margin-top: 15px;
             margin-bottom: 30px;
         }
         .indictr{
-            flex: 0 1 33.333%;
+            flex: 0 1 31.333%;
             text-align: center;
             margin-bottom: 15px;
+            padding: 15px 0;
         }
         .indictr_name{
             font-size: 16px;
