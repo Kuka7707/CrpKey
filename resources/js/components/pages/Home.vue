@@ -1,6 +1,6 @@
 <template>
 
-    <div class="container">
+    <div class="container mt-5">
         <h1>Как получить токен API Яндекс.Метрики</h1>
 
         <div class="articleBody">

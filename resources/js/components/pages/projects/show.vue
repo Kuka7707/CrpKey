@@ -1,26 +1,40 @@
 <template>
     <div class="container">
-        <h1 class="mt-3">{{name}}</h1>
+        <h1 v-if="!edit" class="mt-3">{{name}} 
+            <button type="button" @click="edit=true" class="btn btn-outline-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+            </button>
+        </h1>
+        <label for="intgrN" class="mt-3" v-if="edit">Переименовать интеграцию</label>
+        <input v-if="edit" class="mt-3" name="intgrN" type="text" v-model="name">
+
         <div>Аккаунт: {{account}}</div>
         <div class="row mt-3">
-            <div class="col-md-4">
-                 <p>Выборон профиль:</p>
-                <select v-model="profile">
+            <div class="col-md-12">
+                 <p v-if="!edit">Профиль: {{profile}}</p>
+
+                 <p v-if="edit">Выберите профиль: </p>
+                <select v-model="profile" v-if="edit">
                     <option disabled value="">Выберите один из вариантов</option>
                     <option v-for="prof in profiles_list" v-bind:value="prof.id" :key="prof.id">
                         {{ prof.name }} ({{prof.id}})
                     </option>                
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-12 mt-3">
                 <p>Периоды для отчета</p>
                 от <input type="date" id="date" v-model="start_date"> до
                 <input type="date" id="date" v-model="finish_date">
             </div>
         </div>
         <div class="row mt-5">
-           <div class="col-md-3">
-                <button type="button" class="btn btn-success"  @click="getReport()">Получить отчет</button>
+           <div class="col-md-2">
+                <button type="button" class="btn btn-primary"  @click="getReport()">Получить отчет</button>
+           </div>
+           <div v-if="edit" class="col-md-2">
+                <button type="button" class="btn btn-success"  @click="editProject()">Сохранить</button>
            </div>
         </div>
         <div class="text-center" v-if="load">
@@ -123,6 +137,7 @@ export default {
     components:{Konvers, Devices, Behavior},
     data(){
         return{
+            edit:false,
             integr:[],
             account:null,
             profile:null,
@@ -146,7 +161,12 @@ export default {
             axios.get('/api/integrations/'+ this.slug).then(response => {
                 this.integr = response.data;
                 this.name = this.integr.name
-                this.profile = this.integr.profile
+                if(this.integr.profile){
+                    this.profile = this.integr.profile
+                }else{
+                    this.edit = true
+                }
+                
                 this.getLogin()
                 this.getProfiles()
             }).catch(error => {
@@ -154,6 +174,23 @@ export default {
                 this.errored = true;
             }).finally(() => {
                 this.load = false;
+            })
+        },
+        editProject(){
+            let params = {
+                _method: 'PUT',
+                name: this.name,
+                profile: this.profile,
+                account: this.account
+            };
+            axios.post('/api/integrations/' + this.integr.id, params).then(res => {
+                console.log(res)
+                this.integr = []
+                this.edit = false
+                this.getProject()
+            }).catch(error => {
+                console.log(error)
+                this.errored = true;
             })
         },
         getLogin(){

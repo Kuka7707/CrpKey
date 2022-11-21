@@ -89,9 +89,31 @@ class IntegrationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, $integration)
+    {   
+        $integration = Integration::find($integration);
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => ["required"],
+            ]
+        );
+
+        if($validator->fails()){
+            return [
+                "status" => false,
+                "errors" => $validator->messages()
+            ];
+        }
+
+        $integration->name = ($request->name);
+        $integration->profile = ($request->profile);
+        $integration->account = ($request->account);
+        
+        $integration->save();
+
+        return  $integration;
     }
 
     /**
@@ -100,8 +122,19 @@ class IntegrationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy(Integration $integration)
+    {   
+        if($integration->delete()){
+            return [
+                "status" => true,
+                "integr" => "delete"
+            ];
+        }else{
+            return [
+                "status" => false,
+                "integr" => "No delete"
+            ];
+        }
+            
     }
 }
