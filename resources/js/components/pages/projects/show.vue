@@ -45,61 +45,28 @@
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Глубина просмотра</div>
-                        <div class="indictr_int">{{report[2][0].toFixed(1)}}</div>
+                        <div class="indictr_int">{{Math.round(report[2][0])}}</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Показатель отказов</div>
-                        <div class="indictr_int">{{report[3][0].toFixed(1)}} %</div>
+                        <div class="indictr_int">{{Math.round(report[3][0])}} %</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Время на сайте</div>
-                        <div class="indictr_int">{{report[4][0].toFixed(0)}} сек.</div>
+                        <div class="indictr_int">{{Math.round(report[4][0])}} сек.</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Новые посетители</div>
-                        <div class="indictr_int">{{report[5][0].toFixed(1)}} %</div>
+                        <div class="indictr_int">{{Math.round(report[5][0])}} %</div>
                     </div>
                 </div>
-                <div class="report_title">Яндекс Метрика. Конверсии</div>
-                <div class="report_waves">
-                    <div class="wave">
-                        <div class="wave_title">Клик по номеру телефона</div>
-                        <div class="wave_diagramm">
 
-                        </div>
-                    </div>
-                    <div class="wave">
-                        <div class="wave_title">Клик по кнопке whatsapp</div>
-                        <div class="wave_diagramm">
-                            
-                        </div>
-                    </div>
-                    <div class="wave">
-                        <div class="wave_title">Отправка формы</div>
-                        <div class="wave_diagramm">
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="report_descs">
-                    <p class="report_desc">Целевые визиты - Количество визитов, достигших цели.</p>
-                    <p class="report_desc">Конверсия - Доля целевых визитов в общемчисле визитов.</p>
-                    <p class="report_desc">CPA - Стоимость одного целевого визита. Как считается: Расходы / Целевые визиты.</p>
-                </div>
-                <div class="indictr_name">Целевые визиты</div>
-                <div class="report_main_indicators">
-                    <div class="indictr card" v-for="goal of goals" :key="goal.id">
-                        <div class="indictr_name">{{goal.name}}</div>
-                        <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
-                    </div>
-                </div>
-                <div class="indictr_name">Конверсии, %</div>
-                <div class="report_main_indicators">
-                    <div class="indictr card" v-for="goal of goals" :key="goal.id">
-                        <div class="indictr_name">{{goal.name}}</div>
-                        <div class="indictr_int">{{goalsConvs[goals.indexOf(goal)].toFixed(1)}} %</div>
-                    </div>
-                </div>
+
+                <div class="report_title">Яндекс Метрика. Конверсии</div>
+                
+                <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs"/>
+
+
                 <div class="report_title">Яндекс Метрика. Источники трафика</div>
                 <div class="report_stolb">
                     <div class="report_stolb_diagram">Diagramma</div>
@@ -130,56 +97,30 @@
                         </div>                    
                     </div>
                 </div>
+
+
                 <div class="report_title">Яндекс Метрика. Типы устройств</div>
-                <div class="report_pipe">
-                    <div class="report_pipe_diagram">Diagramma</div>
-                    <div class="report_main_indicators">
-                        <div class="indictr card">
-                            <div class="indictr_name">Смартфоны</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">ПК</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">Планшеты</div>
-                            <div class="indictr_int">0</div>
-                        </div>                   
-                    </div>
-                </div>
+                <Devices :demis="demis"/>
+
+
                 <div class="report_title">Яндекс Метрика. Поведение пользователей</div>
-                <div class="report_big_stolb">
-                    <div class="report_big_stolb_diagramm">diagramma</div>
-                    <div class="report_main_indicators">
-                        <div class="indictr card">
-                            <div class="indictr_name">Глубина просмотров</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">Время на сайте </div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">Показатель отказов</div>
-                            <div class="indictr_int">0</div>
-                        </div>      
-                        <div class="indictr card">
-                            <div class="indictr_name">Новые посетители, %</div>
-                            <div class="indictr_int">0</div>
-                        </div>               
-                    </div>
-                </div>
+                <Behavior :report="report"/>
+
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import Konvers from '../../diagrams/konvers.vue';
+import Devices from '../../diagrams/devices.vue';
+import Behavior from '../../diagrams/behavior.vue';
+
 export default {
     props: [
         'slug',
     ],
+    components:{Konvers, Devices, Behavior},
     data(){
         return{
             integr:[],
@@ -189,6 +130,7 @@ export default {
             start_date:null,
             finish_date:null,
             report:null,
+            demis:null,
             name: null,
             load: true,
             errored: false,
@@ -205,7 +147,6 @@ export default {
                 this.integr = response.data;
                 this.name = this.integr.name
                 this.profile = this.integr.profile
-                console.log(this.profile)
                 this.getLogin()
                 this.getProfiles()
             }).catch(error => {
@@ -254,7 +195,6 @@ export default {
                         this.goalVisits_stirng += `,ym:s:goal${this.goals[i].id}visits`
                     }                    
                 }
-                console.log(this.goalVisits_stirng)
                 this.getGoalVisits()
             }).catch(err => console.log(err))
         },
@@ -266,7 +206,6 @@ export default {
                 }
             }).then(res => {
                 this.goalsVisits = res.data.totals
-                console.log(this.goalsVisits)
             }).catch(err=> {
                 console.log(err)
             })
@@ -296,13 +235,14 @@ export default {
 
                 this.getGoals()
                 
-                axios.get(`https://api-metrika.yandex.net/stat/v1/data/bytime?metrics=ym:s:visits,ym:s:pageviews,ym:s:pageDepth,ym:s:bounceRate,ym:s:avgVisitDurationSeconds,ym:s:newUserVisitsPercentage&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+                axios.get(`https://api-metrika.yandex.net/stat/v1/data/bytime?metrics=ym:s:visits,ym:s:pageviews,ym:s:pageDepth,ym:s:bounceRate,ym:s:avgVisitDurationSeconds,ym:s:newUserVisitsPercentage&dimensions=ym:s:deviceCategory,ym:s:lastSignTrafficSourceName&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
                 }).then(res =>{
-                    // console.log(res.data)
                     this.report = res.data.totals
+                    this.demis = res.data.data
+                    console.log(this.report)
                 }).catch(err => console.log(err))
                 .finally(()=>{
                     this.load = false
@@ -317,7 +257,7 @@ export default {
 }
 </script>
 <style>
-    .report_title{
+        .report_title{
             font-size: 22px;
             font-weight: 700;
         }
