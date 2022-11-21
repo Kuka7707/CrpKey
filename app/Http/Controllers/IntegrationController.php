@@ -32,8 +32,6 @@ class IntegrationController extends Controller
                 'name' => ["required"],
                 'project_id' => ["required"],
                 'slug' => ['required', 'unique:projects', 'max:255'],
-                'profile' => ["required"],
-                'account' => ["required"],
                 'client_id' => ["required"],
                 'client_secret' => ["required"],
                 'auth_token' => ["required"]

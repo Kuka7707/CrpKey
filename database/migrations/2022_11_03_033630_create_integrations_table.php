@@ -16,8 +16,10 @@ class CreateIntegrationsTable extends Migration
         Schema::create('integrations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+           
             $table->string('slug')->unique();
             $table->bigInteger('profile')->nullable();
             $table->string('account')->nullable();
