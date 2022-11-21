@@ -280,6 +280,8 @@ export default {
     .nav-pills .nav-link{
         padding: 10px 80px;
         margin-bottom: 20px;
+        border:solid 1px #0d6efd;
+        border-radius: 10px;
     }
     #v-pills-tabContent{
         width: 100%;
