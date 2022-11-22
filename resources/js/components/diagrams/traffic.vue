@@ -1,8 +1,7 @@
 <template>
-    <div>
-        <div class="report_big_stolb">
-            <div class="report_big_stolb_diagramm">
-                <Bar
+    <div class="report_stolb">
+        <div class="report_stolb_diagram">
+            <Bar
                 :chart-options="chartOptions"
                 :chart-data="chartData"
                 :chart-id="chartId"
@@ -13,25 +12,12 @@
                 :width="width"
                 :height="height"
             />
-            </div>
-            <div class="report_main_indicators">
-                <div class="indictr card">
-                    <div class="indictr_name">Глубина просмотров</div>
-                    <div class="indictr_int">{{Math.round(report[2])}}</div>
-                </div>
-                <div class="indictr card">
-                    <div class="indictr_name">Время на сайте</div>
-                    <div class="indictr_int">{{Math.round(report[4])}} сек.</div>
-                </div>
-                <div class="indictr card">
-                    <div class="indictr_name">Показатель отказов</div>
-                    <div class="indictr_int">{{Math.round(report[3])}} %</div>
-                </div>      
-                <div class="indictr card">
-                    <div class="indictr_name">Новые посетители, %</div>
-                    <div class="indictr_int">{{Math.round(report[5])}} %</div>
-                </div>               
-            </div>
+        </div>
+        <div class="report_main_indicators">
+            <div class="indictr card" v-for="traffic in traffics" :key="traffic.index">
+                <div class="indictr_name">{{traffic.dimensions[0].name}}</div>
+                <div class="indictr_int">{{traffic.metrics[0]}}</div>
+            </div>                  
         </div>
     </div>
 </template>
@@ -56,10 +42,9 @@ export default {
         Bar
     },
     props:{
-        report:{
+        traffics:{
             type: Array,
-            required:true,
-            default:[]
+            required:true
         },
         chartId: {
             type: String,
@@ -92,13 +77,15 @@ export default {
     },
     data() {
         return {
+            names: [],
+            numbers:[],
             chartData: {
-                labels: ['Глубина просмотров', 'Время на сайте', 'Показатель отказов', 'Новые посетители, %' ],
+                labels: this.names,
                 datasets: [
                     {
                         label: 'Поведение пользователей',
                         backgroundColor: '#f87979',
-                        data: [Math.round(this.report[2]), Math.round(this.report[4]), Math.round(this.report[3]), Math.round(this.report[5])]
+                        data: this.numbers
                     }
                 ]
             },
@@ -108,6 +95,15 @@ export default {
             },
             
         }
+    },
+    methods:{
+        newTraffics(){
+            this.names = this.traffics.map(t => t.dimensions[0].name)
+            this.numbers = this.traffics.map(t => t.metrics[0])
+        }
+    },
+    mounted(){
+        this.newTraffics()
     }
 }
 </script>

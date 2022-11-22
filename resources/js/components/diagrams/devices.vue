@@ -17,7 +17,7 @@
             <div class="report_main_indicators">
                 <div class="indictr card" v-for="dem in demis" :key="dem.dimensions[0].id">
                     <div class="indictr_name">{{dem.dimensions[0].name }}</div>
-                    <div class="indictr_int">{{dem.metrics[0][0]}}</div>
+                    <div class="indictr_int">{{dem.metrics[0]}}</div>
                 </div>                                           
             </div>
         </div>
@@ -85,7 +85,7 @@ export default {
                 datasets: [
                 {
                     backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-                    data: this.demis.map(d => d.metrics[0][0]),
+                    data: this.demis.map(d => d.metrics[0]),
                 }
                 ]
             },

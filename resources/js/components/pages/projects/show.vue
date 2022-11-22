@@ -14,7 +14,7 @@
         <div class="row mt-3">
             <div class="col-md-12">
                  <p v-if="!edit">Профиль: {{profile}}</p>
-
+                
                  <p v-if="edit">Выберите профиль: </p>
                 <select v-model="profile" v-if="edit">
                     <option disabled value="">Выберите один из вариантов</option>
@@ -51,66 +51,37 @@
                 <div class="report_main_indicators">
                     <div class="indictr card">
                         <div class="indictr_name">Визиты</div>
-                        <div class="indictr_int">{{report[0][0]}}</div>
+                        <div class="indictr_int">{{report[0]}}</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Просмотры</div>
-                        <div class="indictr_int">{{report[1][0]}}</div>
+                        <div class="indictr_int">{{report[1]}}</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Глубина просмотра</div>
-                        <div class="indictr_int">{{Math.round(report[2][0])}}</div>
+                        <div class="indictr_int">{{Math.round(report[2])}}</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Показатель отказов</div>
-                        <div class="indictr_int">{{Math.round(report[3][0])}} %</div>
+                        <div class="indictr_int">{{Math.round(report[3])}} %</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Время на сайте</div>
-                        <div class="indictr_int">{{Math.round(report[4][0])}} сек.</div>
+                        <div class="indictr_int">{{Math.round(report[4])}} сек.</div>
                     </div>
                     <div class="indictr card">
                         <div class="indictr_name">Новые посетители</div>
-                        <div class="indictr_int">{{Math.round(report[5][0])}} %</div>
+                        <div class="indictr_int">{{Math.round(report[5])}} %</div>
                     </div>
                 </div>
 
 
                 <div class="report_title">Яндекс Метрика. Конверсии</div>
-                
                 <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs"/>
 
 
                 <div class="report_title">Яндекс Метрика. Источники трафика</div>
-                <div class="report_stolb">
-                    <div class="report_stolb_diagram">Diagramma</div>
-                    <div class="report_main_indicators">
-                        <div class="indictr card">
-                            <div class="indictr_name">Facebook (Переходыпорекламе)</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">Google Ads (Переходыпорекламе)</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">crp.worksection.com (Переходыпоссылкам на сайтах)</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">Google (Переходыизпоисковых систем)</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">link.2gis.ru (Переходыпоссылкам на сайтах)</div>
-                            <div class="indictr_int">0</div>
-                        </div>
-                        <div class="indictr card">
-                            <div class="indictr_name">l.wl.co</div>
-                            <div class="indictr_int">0</div>
-                        </div>                    
-                    </div>
-                </div>
+                <Traffic :traffics="traffics"/>
 
 
                 <div class="report_title">Яндекс Метрика. Типы устройств</div>
@@ -129,12 +100,13 @@
 import Konvers from '../../diagrams/konvers.vue';
 import Devices from '../../diagrams/devices.vue';
 import Behavior from '../../diagrams/behavior.vue';
+import Traffic from '../../diagrams/traffic.vue';
 
 export default {
     props: [
         'slug',
     ],
-    components:{Konvers, Devices, Behavior},
+    components:{Konvers, Devices, Behavior, Traffic},
     data(){
         return{
             edit:false,
@@ -149,11 +121,13 @@ export default {
             name: null,
             load: true,
             errored: false,
+            traffics:[],
             goals:[],
             goals_stirng:'',
             goalVisits_stirng:'',
             goalsConvs:[],
             goalsVisits:[],
+            goalsVisitsNum:[]
         }
     },
     methods: {
@@ -223,6 +197,7 @@ export default {
                 }
             }).then(res => {
                 this.goals = res.data.goals
+                
                 for(let i = 0; i < this.goals.length; i++){
                     if(i == 0){
                         this.goals_stirng += `ym:s:goal${this.goals[i].id}conversionRate`
@@ -232,22 +207,21 @@ export default {
                         this.goalVisits_stirng += `,ym:s:goal${this.goals[i].id}visits`
                     }                    
                 }
+            }).catch(err => console.log(err)).finally(()=>{
                 this.getGoalVisits()
-            }).catch(err => console.log(err))
+                this.getConvers()
+            })
         },
         getGoalVisits(){
-            this.goalsVisits = []
-            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goalVisits_stirng}&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goalVisits_stirng}&date1=${this.start_date}&date2=${this.finish_date}&ids=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
             }).then(res => {
-                this.goalsVisits = res.data.totals
+                this.goalsVisits = res.data.totals                
             }).catch(err=> {
                 console.log(err)
             })
-
-            this.getConvers()
         },
         getConvers(){
             this.goalsConvs = []
@@ -261,28 +235,36 @@ export default {
                 console.log(err)
             })
         },
-        getReport(){
+        getTraffic(){
+            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=ym:s:visits&dimensions=ym:s:lastSignTrafficSource&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+                    headers: {
+                        'Authorization': `OAuth ${this.integr.auth_token}`,
+                    }
+            }).then(res => {
+                console.log(res.data.data)
+                this.traffics = res.data.data
+            }).catch(err => console.log(err))
+        },
+        async getReport(){
             if(!this.start_date || !this.finish_date){
                 alert('Укажите дату')
             }
             else{
-                
                 this.report= null,
                 this.load = true,
 
-                this.getGoals()
-                
-                axios.get(`https://api-metrika.yandex.net/stat/v1/data/bytime?metrics=ym:s:visits,ym:s:pageviews,ym:s:pageDepth,ym:s:bounceRate,ym:s:avgVisitDurationSeconds,ym:s:newUserVisitsPercentage&dimensions=ym:s:deviceCategory,ym:s:lastSignTrafficSourceName&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+                await axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=ym:s:visits,ym:s:pageviews,ym:s:pageDepth,ym:s:bounceRate,ym:s:avgVisitDurationSeconds,ym:s:newUserVisitsPercentage&dimensions=ym:s:deviceCategory&date1=${this.start_date}&date2=${this.finish_date}&ids=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
                 }).then(res =>{
                     this.report = res.data.totals
                     this.demis = res.data.data
-                    console.log(this.report)
                 }).catch(err => console.log(err))
                 .finally(()=>{
                     this.load = false
+                    this.getGoals()
+                    this.getTraffic()
                 })
             }
             
