@@ -126,8 +126,7 @@ export default {
             goals_stirng:'',
             goalVisits_stirng:'',
             goalsConvs:[],
-            goalsVisits:[],
-            goalsVisitsNum:[]
+            goalsVisits:[]
         }
     },
     methods: {
@@ -211,6 +210,7 @@ export default {
             })
         },
         getGoalVisits(){
+            this.goalsVisits = []
             axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goalVisits_stirng}&date1=${this.start_date}&date2=${this.finish_date}&ids=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
@@ -234,6 +234,7 @@ export default {
             })
         },
         getTraffic(){
+            this.traffics = []
             axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=ym:s:visits&dimensions=ym:s:lastSignTrafficSource&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
                     headers: {
                         'Authorization': `OAuth ${this.integr.auth_token}`,

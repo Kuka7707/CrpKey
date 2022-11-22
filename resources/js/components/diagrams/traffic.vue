@@ -81,7 +81,7 @@ export default {
                 labels: this.traffics.map(t => t.dimensions[0].name),
                 datasets: [
                     {
-                        label: 'Поведение пользователей',
+                        label: 'Источники трафика',
                         backgroundColor: '#f87979',
                         data: this.traffics.map(t => t.metrics[0])
                     }
