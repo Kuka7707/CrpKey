@@ -140,7 +140,6 @@ export default {
                 }else{
                     this.edit = true
                 }
-                
                 this.getLogin()
                 this.getProfiles()
             }).catch(error => {
@@ -158,7 +157,6 @@ export default {
                 account: this.account
             };
             axios.post('/api/integrations/' + this.integr.id, params).then(res => {
-                console.log(res)
                 this.integr = []
                 this.edit = false
                 this.getProject()
@@ -241,7 +239,6 @@ export default {
                         'Authorization': `OAuth ${this.integr.auth_token}`,
                     }
             }).then(res => {
-                console.log(res.data.data)
                 this.traffics = res.data.data
             }).catch(err => console.log(err))
         },

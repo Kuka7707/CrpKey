@@ -77,15 +77,13 @@ export default {
     },
     data() {
         return {
-            names: [],
-            numbers:[],
             chartData: {
-                labels: this.names,
+                labels: this.traffics.map(t => t.dimensions[0].name),
                 datasets: [
                     {
                         label: 'Поведение пользователей',
                         backgroundColor: '#f87979',
-                        data: this.numbers
+                        data: this.traffics.map(t => t.metrics[0])
                     }
                 ]
             },
@@ -95,15 +93,6 @@ export default {
             },
             
         }
-    },
-    methods:{
-        newTraffics(){
-            this.names = this.traffics.map(t => t.dimensions[0].name)
-            this.numbers = this.traffics.map(t => t.metrics[0])
-        }
-    },
-    mounted(){
-        this.newTraffics()
     }
 }
 </script>
