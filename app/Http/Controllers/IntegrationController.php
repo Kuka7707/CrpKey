@@ -32,8 +32,8 @@ class IntegrationController extends Controller
                 'name' => ["required"],
                 'project_id' => ["required"],
                 'slug' => ['required', 'unique:projects', 'max:255'],
-                'client_id' => ["required"],
-                'client_secret' => ["required"],
+                // 'client_id' => ["required"],
+                // 'client_secret' => ["required"],
                 'auth_token' => ["required"]
             ]
         );
@@ -51,8 +51,8 @@ class IntegrationController extends Controller
             "slug" => $request->slug,
             "profile" => $request->profile,
             "account" => $request->account,
-            'client_id' =>  $request->client_id,
-            'client_secret' =>  $request->client_secret,
+            // 'client_id' =>  $request->client_id,
+            // 'client_secret' =>  $request->client_secret,
             'auth_token' =>  $request->auth_token
         ]);
 

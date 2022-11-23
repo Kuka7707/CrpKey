@@ -117,19 +117,19 @@
                             <label for="url">URL</label>
                             <input type="text" v-model="intgrSlug" name="url">
                         </div>
-                        <div class="modal_item">
+                        <!-- <div class="modal_item">
                             <label for="intgrClientId">CLIENT_ID</label>
                             <input type="text" v-model="intgrClientId" name="intgrClientId">
                         </div>
                         <div class="modal_item">
                             <label for="intgrClientSecret">CLIENT_SECRET</label>
                             <input type="text" v-model="intgrClientSecret" name="intgrClientSecret">
-                        </div>
+                        </div> -->
                         <div class="modal_item">
                             <label for="intgrAuthToken">Auth_Token</label>
                             <input type="text" v-model="intgrAuthToken" name="intgrAuthToken">
                         </div>
-                        
+                        <a type="button" class="btn btn-primary" target="_blank" href="https://oauth.yandex.ru/authorize?response_type=token&amp;client_id=65506b92a1df480093dd75dd62ad3357">Получить Auth_Token</a>
                         
                         
                     </div>
