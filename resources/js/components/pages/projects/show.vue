@@ -51,7 +51,7 @@
 
             <div class="report_main">
                 <div class="report_title">Яндекс Метрика. Трафик. Основные показатели</div>
-                <div class="report_main_indicators">
+                <div class="report_indicators">
                     <div class="indictr card">
                         <div class="indictr_name">Визиты</div>
                         <div class="indictr_int">{{ report[0] }}</div>
@@ -77,21 +77,21 @@
                         <div class="indictr_int">{{ Math.round(report[5]) }} %</div>
                     </div>
                 </div>
+                <hr>
 
-
-                <div class="report_title">Яндекс Метрика. Конверсии</div>
+                <div class="report_title mt-5">Яндекс Метрика. Конверсии</div>
                 <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs" />
+                <hr>
 
-
-                <div class="report_title">Яндекс Метрика. Источники трафика</div>
+                <div class="report_title mt-5">Яндекс Метрика. Источники трафика</div>
                 <Traffic :traffics="traffics" />
+                <hr>
 
-
-                <div class="report_title">Яндекс Метрика. Типы устройств</div>
+                <div class="report_title mt-5">Яндекс Метрика. Типы устройств</div>
                 <Devices :demis="demis" />
+                <hr>
 
-
-                <div class="report_title">Яндекс Метрика. Поведение пользователей</div>
+                <div class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
                 <Behavior :report="report" />
 
             </div>
@@ -304,34 +304,54 @@ export default {
 .report_main {
     margin-top: 30px;
 }
-
+.report_stolb {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
 .report_main_indicators {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    flex: 0 1 40%;
+}
+.report_stolb_diagram {
+    flex: 0 1 58%;
+}
+.report_indicators {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     margin-top: 15px;
     margin-bottom: 30px;
 }
-
-.indictr {
+.report_indicators .indictr{
     flex: 0 1 31.333%;
-    text-align: center;
+    padding: 15px;
+}
+.indictr {
     margin-bottom: 15px;
-    padding: 15px 0;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .indictr_name {
     font-size: 16px;
+    flex: 0 1 50%;
 }
-.indictr_desc{
+
+.indictr_desc {
     font-size: 12px;
     color: #a6a6a6;
 }
-
 .indictr_int {
-    margin-top: 10px;
     font-size: 18px;
     font-weight: 700;
+    flex: 0 1 50%;
+    text-align: end;
 }
 
 .report_waves {
@@ -350,4 +370,5 @@ export default {
 .report_descs {
     margin-bottom: 30px;
 }
+
 </style>

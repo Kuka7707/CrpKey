@@ -1,36 +1,41 @@
 <template>
     <div>
-        <div class="report_waves">
-            <Bar
-                :chart-options="chartOptions"
-                :chart-data="chartData"
-                :chart-id="chartId"
-                :dataset-id-key="datasetIdKey"
-                :plugins="plugins"
-                :css-classes="cssClasses"
-                :styles="styles"
-                :width="width"
-                :height="height"
-            />
+        <div class="report_stolb">
+            <div class="report_stolb_diagram">
+                <Bar
+                    :chart-options="chartOptions"
+                    :chart-data="chartData"
+                    :chart-id="chartId"
+                    :dataset-id-key="datasetIdKey"
+                    :plugins="plugins"
+                    :css-classes="cssClasses"
+                    :styles="styles"
+                    :width="width"
+                    :height="height"
+                />
+            </div>
+            <div class="report_main_indicators">
+                <div class="report_main_indicators">
+                    <div class="indictr_name">Целевые визиты</div>
+                    <div class="indictr card" v-for="goal in goals" :key="goal.id">
+                        <div class="indictr_name">{{goal.name}}</div>
+                        <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <div class="indictr_name">Конверсии, %</div>
+            <div class="report_indicators">
+                <div class="indictr card" v-for="goal in goals" :key="goal.id">
+                    <div class="indictr_name">{{goal.name}}</div>
+                    <div class="indictr_int">{{Math.round(goalsConvs[goals.indexOf(goal)])}} %</div>
+                </div>
+            </div>
         <div class="report_descs">
             <p class="report_desc">Целевые визиты - Количество визитов, достигших цели.</p>
             <p class="report_desc">Конверсия - Доля целевых визитов в общемчисле визитов.</p>
             <p class="report_desc">CPA - Стоимость одного целевого визита. Как считается: Расходы / Целевые визиты.</p>
-        </div>
-        <div class="indictr_name">Целевые визиты</div>
-        <div class="report_main_indicators">
-            <div class="indictr card" v-for="goal in goals" :key="goal.id">
-                <div class="indictr_name">{{goal.name}}</div>
-                <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
-            </div>
-        </div>
-        <div class="indictr_name">Конверсии, %</div>
-        <div class="report_main_indicators">
-            <div class="indictr card" v-for="goal in goals" :key="goal.id">
-                <div class="indictr_name">{{goal.name}}</div>
-                <div class="indictr_int">{{Math.round(goalsConvs[goals.indexOf(goal)])}} %</div>
-            </div>
         </div>
     </div>
 </template>
@@ -84,7 +89,7 @@ export default {
         },
         height: {
             type: Number,
-            default: 400
+            default: 650
         },
         cssClasses: {
             default: '',

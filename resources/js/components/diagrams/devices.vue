@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="report_pipe">
-            <div class="report_pipe_diagram">
+        <div class="report_stolb">
+            <div class="report_stolb_diagram">
                 <Pie
                     :chart-options="chartOptions"
                     :chart-data="chartData"

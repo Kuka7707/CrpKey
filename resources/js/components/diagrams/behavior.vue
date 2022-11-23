@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="report_big_stolb">
-            <div class="report_big_stolb_diagramm">
+        <div class="report_stolb mt-4">
+            <div class="report_stolb_diagram">
                 <Bar
                 :chart-options="chartOptions"
                 :chart-data="chartData"
@@ -71,7 +71,7 @@ export default {
         },
         width: {
             type: Number,
-            default: 400
+            default: 600
         },
         height: {
             type: Number,
