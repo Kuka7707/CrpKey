@@ -38,6 +38,9 @@
             <div v-if="edit" class="col-md-2">
                 <button type="button" class="btn btn-success" @click="editProject()">Сохранить</button>
             </div>
+            <div v-if="report" class="col-md-2">
+                <button type="button" class="btn btn-success" @click="downloadPdf()">Скачать в PDF</button>
+            </div>
         </div>
         <div class="text-center" v-if="load">
             <div class="spinner-border text-info" style="width: 5rem; height: 5rem;" role="status">
@@ -45,54 +48,64 @@
             </div>
         </div>
         <div class="report mt-5" v-if="report">
-            <img src="/logo.svg" alt="">
-            <div class="report_title mt-3">Отчет по рекламе {{profileName}}</div>
-            <div class="report_date">Данные сформированы за период {{ start_date }} - {{ finish_date }}</div>
+            <div ref="header">
+                <img src="/logo.svg" alt="">
+                <div class="report_title mt-3">Отчет по рекламе {{profileName}}</div>
+                <div class="report_date">Данные сформированы за период {{ start_date }} - {{ finish_date }}</div>
+            </div>
 
             <div class="report_main">
-                <div class="report_title">Яндекс Метрика. Трафик. Основные показатели</div>
-                <div class="report_indicators">
-                    <div class="indictr card">
-                        <div class="indictr_name">Визиты</div>
-                        <div class="indictr_int">{{ report[0] }}</div>
+                <div ref="konvers">
+                    <div class="report_title">Яндекс Метрика. Трафик. Основные показатели</div>
+                    <div class="report_indicators">
+                        <div class="indictr card">
+                            <div class="indictr_name">Визиты</div>
+                            <div class="indictr_int">{{ report[0] }}</div>
+                        </div>
+                        <div class="indictr card">
+                            <div class="indictr_name">Просмотры</div>
+                            <div class="indictr_int">{{ report[1] }}</div>
+                        </div>
+                        <div class="indictr card">
+                            <div class="indictr_name">Глубина просмотра</div>
+                            <div class="indictr_int">{{ Math.round(report[2]) }}</div>
+                        </div>
+                        <div class="indictr card">
+                            <div class="indictr_name">Показатель отказов</div>
+                            <div class="indictr_int">{{ Math.round(report[3]) }} %</div>
+                        </div>
+                        <div class="indictr card">
+                            <div class="indictr_name">Время на сайте</div>
+                            <div class="indictr_int">{{ Math.round(report[4]) }} сек.</div>
+                        </div>
+                        <div class="indictr card">
+                            <div class="indictr_name">Новые посетители</div>
+                            <div class="indictr_int">{{ Math.round(report[5]) }} %</div>
+                        </div>
                     </div>
-                    <div class="indictr card">
-                        <div class="indictr_name">Просмотры</div>
-                        <div class="indictr_int">{{ report[1] }}</div>
-                    </div>
-                    <div class="indictr card">
-                        <div class="indictr_name">Глубина просмотра</div>
-                        <div class="indictr_int">{{ Math.round(report[2]) }}</div>
-                    </div>
-                    <div class="indictr card">
-                        <div class="indictr_name">Показатель отказов</div>
-                        <div class="indictr_int">{{ Math.round(report[3]) }} %</div>
-                    </div>
-                    <div class="indictr card">
-                        <div class="indictr_name">Время на сайте</div>
-                        <div class="indictr_int">{{ Math.round(report[4]) }} сек.</div>
-                    </div>
-                    <div class="indictr card">
-                        <div class="indictr_name">Новые посетители</div>
-                        <div class="indictr_int">{{ Math.round(report[5]) }} %</div>
-                    </div>
+                    <hr>
+
+                    <div class="report_title mt-5">Яндекс Метрика. Конверсии</div>
+                    <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs" />
+                    <hr>
                 </div>
-                <hr>
 
-                <div class="report_title mt-5">Яндекс Метрика. Конверсии</div>
-                <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs" />
-                <hr>
+                <div ref="traffic">
+                    <div class="report_title mt-5">Яндекс Метрика. Источники трафика</div>
+                    <Traffic :traffics="traffics" />
+                    <hr>
+                </div>
 
-                <div class="report_title mt-5">Яндекс Метрика. Источники трафика</div>
-                <Traffic :traffics="traffics" />
-                <hr>
+                <div ref="device">
+                    <div class="report_title mt-5">Яндекс Метрика. Типы устройств</div>
+                    <Devices :demis="demis" />
+                    <hr>
+                </div>
 
-                <div class="report_title mt-5">Яндекс Метрика. Типы устройств</div>
-                <Devices :demis="demis" />
-                <hr>
-
-                <div class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
-                <Behavior :report="report" />
+                <div ref="behavior">
+                    <div class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
+                    <Behavior :report="report" />
+                </div>
 
             </div>
         </div>
@@ -100,6 +113,9 @@
 </template>
 
 <script>
+import jsPDF from 'jspdf';
+import html2canvas from "html2canvas"
+
 import Konvers from '../../diagrams/konvers.vue';
 import Devices from '../../diagrams/devices.vue';
 import Behavior from '../../diagrams/behavior.vue';
@@ -193,7 +209,6 @@ export default {
                 for (let n of this.profiles_list){
                     if(n.id == this.profile){
                         this.profileName = n.name
-                        console.log(this.profileName)
                     }
                 }
             }).catch(err => {
@@ -257,8 +272,67 @@ export default {
                 }
             }).then(res => {
                 this.traffics = res.data.data
-                console.log(res)
             }).catch(err => console.log(err))
+        },
+        async downloadPdf(){
+            
+            let headImg, konversImg, trafficImg, deviceImg, behaviorImg
+            const doc = new jsPDF('landscape');
+
+            var canvasHead = document.createElement('canvas');
+            canvasHead.setAttribute('width', 1116);
+            canvasHead.setAttribute('height', 130);
+
+            var canvasKonvers = document.createElement('canvas');
+            canvasKonvers.setAttribute('width', 1116);
+            canvasKonvers.setAttribute('height', 1205);
+
+            var canvasTraffic = document.createElement('canvas');
+            canvasTraffic.setAttribute('width', 1116);
+            canvasTraffic.setAttribute('height', 742);
+
+            var canvasDevice = document.createElement('canvas');
+            canvasDevice.setAttribute('width', 1116);
+            canvasDevice.setAttribute('height', 450);
+
+            var canvasBehavior = document.createElement('canvas');
+            canvasBehavior.setAttribute('width', 1116);
+            canvasBehavior.setAttribute('height', 500);
+
+            await html2canvas(this.$refs.header, {head: canvasHead}).then(head => {
+                headImg = head.toDataURL("image/jpeg");
+                return headImg
+            });
+            await html2canvas(this.$refs.konvers, {konvers: canvasKonvers}).then(konvers => {
+                konversImg = konvers.toDataURL("image/jpeg");
+                return konversImg
+            });
+            await html2canvas(this.$refs.traffic, {traffic: canvasTraffic}).then(traffic => {
+                trafficImg = traffic.toDataURL("image/jpeg");
+                return trafficImg
+            });
+            await html2canvas(this.$refs.device, {device: canvasDevice}).then(device => {
+                deviceImg = device.toDataURL("image/jpeg");
+                return deviceImg
+            });
+            await html2canvas(this.$refs.behavior, {behavior: canvasBehavior}).then(behavior => {
+                behaviorImg = behavior.toDataURL("image/jpeg");
+                return behaviorImg
+            });
+
+            let width = doc.internal.pageSize.getWidth();
+            let height = doc.internal.pageSize.getHeight();
+
+            doc.addImage(headImg,'JPEG',40,40);
+            doc.addPage()
+            doc.addImage(konversImg,'JPEG',1,1,width,height);
+            doc.addPage()
+            doc.addImage(trafficImg,'JPEG',1,1,width,height);
+            doc.addPage()
+            doc.addImage(deviceImg,'JPEG',1,1,280,150);
+            doc.addPage()
+            doc.addImage(behaviorImg,'JPEG',1,1,280,150);
+            doc.save("Отчет.pdf");
         },
         async getReport() {
             if (!this.start_date || !this.finish_date) {
@@ -314,10 +388,10 @@ export default {
     flex-direction: column;
     margin-top: 15px;
     margin-bottom: 30px;
-    flex: 0 1 40%;
+    flex: 0 1 27%;
 }
 .report_stolb_diagram {
-    flex: 0 1 58%;
+    flex: 0 1 72%;
 }
 .report_indicators {
     display: flex;
@@ -332,15 +406,15 @@ export default {
 }
 .indictr {
     margin-bottom: 15px;
-    padding: 15px 10px;
+    padding: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 }
 
 .indictr_name {
     font-size: 16px;
-    flex: 0 1 50%;
 }
 
 .indictr_desc {
@@ -350,7 +424,6 @@ export default {
 .indictr_int {
     font-size: 18px;
     font-weight: 700;
-    flex: 0 1 50%;
     text-align: end;
 }
 

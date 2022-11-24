@@ -1,5 +1,5 @@
 <template>
-    <div class="report_stolb">
+    <div class="report_stolb mt-4">
         <div class="report_stolb_diagram">
             <Bar
                 :chart-options="chartOptions"
@@ -15,14 +15,16 @@
         </div>
         <div class="report_main_indicators">
             <div class="indictr card" v-for="traffic in traffics" :key="traffic.index">
-                <div v-if="traffic.dimensions[0].name == 'Other ad: identified by tags'" class="indictr_name">Другая реклама</div>
-                <div v-else class="indictr_name">{{traffic.dimensions[0].name}}</div>
+                <div class="indictr_item">
+                    <div v-if="traffic.dimensions[0].name == 'Other ad: identified by tags'" class="indictr_name">Другая реклама</div>
+                    <div v-else class="indictr_name">{{traffic.dimensions[0].name}}</div>
 
-                <div v-if="traffic.dimensions[0].url" class="indictr_desc">Переходы по ссылкам на сайтах</div>
-                <div v-else-if="traffic.dimensions[0].name == 'Google' || traffic.dimensions[0].name == 'Yandex' || traffic.dimensions[0].name == 'Baidu' || traffic.dimensions[0].name == 'Bing' || traffic.dimensions[0].name == 'Ukr.net'" class="indictr_desc">Переходы из поисковых систем</div>
-                <div v-else-if="traffic.dimensions[0].name == 'instagram.com' || traffic.dimensions[0].name == 'Facebook' || traffic.dimensions[0].name == 'VKontakte' || traffic.dimensions[0].name == 'Telegram'" class="indictr_desc">Переходы из социальных сетей</div>
-                <div v-else-if="traffic.dimensions[0].name == 'Google Ads'" class="indictr_desc">Переходы по рекламе</div>
-                <div v-else class="indictr_desc">Переходы по рекламе</div>
+                    <div v-if="traffic.dimensions[0].url" class="indictr_desc">Переходы по ссылкам на сайтах</div>
+                    <div v-else-if="traffic.dimensions[0].name == 'Google' || traffic.dimensions[0].name == 'Yandex' || traffic.dimensions[0].name == 'Baidu' || traffic.dimensions[0].name == 'Bing' || traffic.dimensions[0].name == 'Ukr.net'" class="indictr_desc">Переходы из поисковых систем</div>
+                    <div v-else-if="traffic.dimensions[0].name == 'instagram.com' || traffic.dimensions[0].name == 'Facebook' || traffic.dimensions[0].name == 'VKontakte' || traffic.dimensions[0].name == 'Telegram'" class="indictr_desc">Переходы из социальных сетей</div>
+                    <div v-else-if="traffic.dimensions[0].name == 'Google Ads'" class="indictr_desc">Переходы по рекламе</div>
+                    <div v-else class="indictr_desc">Переходы по рекламе</div>
+                </div>
 
 
                 <div class="indictr_int">{{traffic.metrics[0]}}</div>
