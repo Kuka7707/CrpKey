@@ -41,6 +41,9 @@
             <div v-if="report" class="col-md-2">
                 <button type="button" class="btn btn-success" @click="downloadPdf()">Скачать в PDF</button>
             </div>
+            <div v-if="report" class="col-md-2">
+                <button type="button" class="btn btn-success" @click="downloadDoc()">Скачать в DOC</button>
+            </div>
         </div>
         <div class="text-center" v-if="load">
             <div class="spinner-border text-info" style="width: 5rem; height: 5rem;" role="status">
@@ -48,10 +51,10 @@
             </div>
         </div>
         <div class="report mt-5" v-if="report">
-            <div ref="header">
-                <img src="/logo.svg" alt="">
-                <div class="report_title mt-3">Отчет по рекламе {{profileName}}</div>
-                <div class="report_date">Данные сформированы за период {{ start_date }} - {{ finish_date }}</div>
+            <div>
+                <img ref="header" src="/logo.svg" alt="">
+                <div ref="header_title" class="report_title mt-3">Отчет по рекламе {{profileName}}</div>
+                <div ref="header_text" class="report_date">Данные сформированы за период {{ start_date }} - {{ finish_date }}</div>
             </div>
 
             <div class="report_main">
@@ -115,6 +118,8 @@
 <script>
 import jsPDF from 'jspdf';
 import html2canvas from "html2canvas"
+import { Document, Paragraph, Packer, TextRun, ImageRun } from "docx";
+import FileSaver from 'file-saver';
 
 import Konvers from '../../diagrams/konvers.vue';
 import Devices from '../../diagrams/devices.vue';
@@ -125,7 +130,7 @@ export default {
     props: [
         'slug',
     ],
-    components: { Konvers, Devices, Behavior, Traffic },
+    components: { Konvers, Devices, Behavior, Traffic, Document, Packer, Paragraph, TextRun, ImageRun },
     data() {
         return {
             edit: false,
@@ -146,7 +151,20 @@ export default {
             goals_stirng: '',
             goalVisits_stirng: '',
             goalsConvs: [],
-            goalsVisits: []
+            goalsVisits: [],
+            state: {
+                name: 'San Luis Potosi',
+                map: 'data:image/png;base64',
+                municipalities: [
+                {name:'San Luis Potosi', population: 824000}, 
+                {name:'Rio Verde', population: 160000},
+                {name:'Cd Valles', population: 176000},
+                {name:'Matehuala', population:82726}
+                ],
+                tourist_attractions: [
+                'Tamtoc', 'Sótano de las Golondrinas', 'Cascada de Tamul' 
+                ]
+            }
         }
     },
     methods: {
@@ -275,7 +293,7 @@ export default {
             }).catch(err => console.log(err))
         },
         async downloadPdf(){
-            
+            this.load = true
             let headImg, konversImg, trafficImg, deviceImg, behaviorImg
             const doc = new jsPDF('landscape');
 
@@ -323,16 +341,66 @@ export default {
             let width = doc.internal.pageSize.getWidth();
             let height = doc.internal.pageSize.getHeight();
 
-            doc.addImage(headImg,'JPEG',40,40);
+
+            
+            doc.addImage(headImg,'JPEG',80,20);
+            doc.text(this.$refs.header_title.innerHTML, 40, 50)
+            doc.text(this.$refs.header_text.innerHTML, 40, 70)
             doc.addPage()
-            doc.addImage(konversImg,'JPEG',1,1,width,height);
+            doc.addImage(konversImg,'JPEG',1,1,280,200);
             doc.addPage()
-            doc.addImage(trafficImg,'JPEG',1,1,width,height);
+            doc.addImage(trafficImg,'JPEG',1,1,280,200);
             doc.addPage()
             doc.addImage(deviceImg,'JPEG',1,1,280,150);
             doc.addPage()
             doc.addImage(behaviorImg,'JPEG',1,1,280,150);
             doc.save("Отчет.pdf");
+            this.load = false
+        },
+        async downloadDoc(){
+            this.load = true
+            
+
+            const doc = new Document({
+                sections: [
+                {
+                    properties: {},
+                    children: [
+                        // new ImageRun({
+                        //     data: ("/logo.svg"),
+                        //     transformation: {
+                        //         width: 235,
+                        //         height: 50,
+                        //     },
+                        // }),
+                        new Paragraph({
+                            children: [
+                            new TextRun(this.$refs.header_title.innerHTML),                       
+                            ],
+                        }),
+                        new Paragraph({
+                            children: [
+                            new TextRun(this.$refs.header_text.innerHTML),                       
+                            ],
+                        }),
+                        new Paragraph({
+                            children: [
+                            new TextRun(this.$refs.konvers.innerHTML),                       
+                            ],
+                        }),
+                    ],
+                },
+                ],
+            });
+            const mimeType =
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            const fileName = `${this.profileName}_report.docx`;
+            await Packer.toBlob(doc).then((blob) => {
+                const docblob = blob.slice(0, blob.size, mimeType);
+                FileSaver.saveAs(docblob, fileName);
+            });
+
+            this.load = false
         },
         async getReport() {
             if (!this.start_date || !this.finish_date) {
@@ -385,13 +453,13 @@ export default {
 }
 .report_main_indicators {
     display: flex;
-    flex-direction: column;
-    margin-top: 15px;
-    margin-bottom: 30px;
-    flex: 0 1 27%;
+    margin: 30px 0;
+    flex: 0 1 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 .report_stolb_diagram {
-    flex: 0 1 72%;
+    flex: 0 1 100%;
 }
 .report_indicators {
     display: flex;
@@ -411,6 +479,7 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    flex: 0 1 31.3333%;
 }
 
 .indictr_name {

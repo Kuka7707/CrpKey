@@ -14,15 +14,15 @@
                     :height="height"
                 />
             </div>
+            
+            <div class="indictr_name">Целевые визиты</div>
             <div class="report_main_indicators">
-                <div class="report_main_indicators">
-                    <div class="indictr_name">Целевые визиты</div>
-                    <div class="indictr card" v-for="goal in goals" :key="goal.id">
-                        <div class="indictr_name">{{goal.name}}</div>
-                        <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
-                    </div>
+                <div class="indictr card" v-for="goal in goals" :key="goal.id">
+                    <div class="indictr_name">{{goal.name}}</div>
+                    <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
                 </div>
             </div>
+
         </div>
         
         <div class="indictr_name">Конверсии, %</div>
