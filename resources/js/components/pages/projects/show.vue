@@ -59,7 +59,7 @@
 
             <div class="report_main">
                 <div ref="konvers">
-                    <div class="report_title">Яндекс Метрика. Трафик. Основные показатели</div>
+                    <div ref="main_title" class="report_title">Яндекс Метрика. Трафик. Основные показатели</div>
                     <div class="report_indicators">
                         <div class="indictr card">
                             <div class="indictr_name">Визиты</div>
@@ -88,25 +88,25 @@
                     </div>
                     <hr>
 
-                    <div class="report_title mt-5">Яндекс Метрика. Конверсии</div>
+                    <div ref="konvers_title" class="report_title mt-5">Яндекс Метрика. Конверсии</div>
                     <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs" />
                     <hr>
                 </div>
 
                 <div ref="traffic">
-                    <div class="report_title mt-5">Яндекс Метрика. Источники трафика</div>
+                    <div ref="traffic_title" class="report_title mt-5">Яндекс Метрика. Источники трафика</div>
                     <Traffic :traffics="traffics" />
                     <hr>
                 </div>
 
                 <div ref="device">
-                    <div class="report_title mt-5">Яндекс Метрика. Типы устройств</div>
+                    <div ref="device_title" class="report_title mt-5">Яндекс Метрика. Типы устройств</div>
                     <Devices :demis="demis" />
                     <hr>
                 </div>
 
                 <div ref="behavior">
-                    <div class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
+                    <div ref="behavior_title" class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
                     <Behavior :report="report" />
                 </div>
 
@@ -152,19 +152,6 @@ export default {
             goalVisits_stirng: '',
             goalsConvs: [],
             goalsVisits: [],
-            state: {
-                name: 'San Luis Potosi',
-                map: 'data:image/png;base64',
-                municipalities: [
-                {name:'San Luis Potosi', population: 824000}, 
-                {name:'Rio Verde', population: 160000},
-                {name:'Cd Valles', population: 176000},
-                {name:'Matehuala', population:82726}
-                ],
-                tourist_attractions: [
-                'Tamtoc', 'Sótano de las Golondrinas', 'Cascada de Tamul' 
-                ]
-            }
         }
     },
     methods: {
@@ -359,7 +346,16 @@ export default {
         },
         async downloadDoc(){
             this.load = true
-            
+
+            let konv_doc = [];
+            let konv_docPr = [];
+
+            for(let i = 0; i < this.goals.length; i++){
+                konv_doc.push(new TextRun(`${this.goals[i].name}  ${this.goalsVisits[i]}          `),)
+            }
+            for(let i = 0; i < this.goals.length; i++){
+                konv_docPr.push(new TextRun(`${this.goals[i].name}  ${Math.round(this.goalsConvs[i])}%        `),)
+            }
 
             const doc = new Document({
                 sections: [
@@ -385,13 +381,75 @@ export default {
                         }),
                         new Paragraph({
                             children: [
-                            new TextRun(this.$refs.konvers.innerHTML),                       
+                            new TextRun(this.$refs.main_title.innerHTML),                       
                             ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(``),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(`Визиты  ${this.report[0]}`),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(`Просмотры  ${this.report[1]}`),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(`Глубина просмотра  ${Math.round(this.report[2])}`),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(`Показатель отказов  ${Math.round(this.report[3])} %`),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(`Время на сайте ${Math.round(this.report[4])} сек.`),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(`Новые посетители  ${Math.round(this.report[5])} %`),                       
+                            ],
+                        }),
+                        new Paragraph({                            
+                            children: [
+                            new TextRun(``),                       
+                            ],
+                        }),
+                        new Paragraph({
+                            children: [
+                            new TextRun(this.$refs.konvers_title.innerHTML),                       
+                            ],
+                        }),
+                        new Paragraph({
+                            children: [
+                            new TextRun('Целевые визиты'),                       
+                            ],
+                        }),
+                        new Paragraph({
+                            children: konv_doc,
+                        }),
+                        new Paragraph({
+                            children: [
+                            new TextRun('Конверсии, %'),                       
+                            ],
+                        }),
+                        new Paragraph({
+                            children: konv_docPr,
                         }),
                     ],
                 },
                 ],
             });
+
             const mimeType =
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             const fileName = `${this.profileName}_report.docx`;
