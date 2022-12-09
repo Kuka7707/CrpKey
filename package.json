@@ -24,14 +24,31 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@stdlib/fs-read-file": "^0.0.8",
         "bootstrap-vue": "^2.23.1",
+        "bro-fs": "^0.6.0",
         "chart.js": "^3.9.1",
         "docx": "^7.7.0",
         "file-saver": "^2.0.5",
+        "file-system": "^2.2.2",
         "fs": "^0.0.1-security",
+        "fs-web": "^1.0.1",
         "html2canvas": "^1.4.1",
         "jspdf": "^1.5.3",
+        "memory-fs": "^0.5.0",
         "vue-chartjs": "^4.1.2",
         "vue-router": "^3.4.9"
-    }
+    },
+    "browser": {
+        "fs": false,
+        "path": false,
+        "os": false,
+        "crypto": false,
+        "stream": false,
+        "http": false,
+        "tls": false,
+        "zlib": false,
+        "https": false,
+        "net": false
+      }
 }
