@@ -14,24 +14,6 @@
                 :height="height"
             />
             </div>
-            <div class="report_main_indicators">
-                <div class="indictr card">
-                    <div class="indictr_name">Глубина просмотров</div>
-                    <div class="indictr_int">{{Math.round(report[2])}}</div>
-                </div>
-                <div class="indictr card">
-                    <div class="indictr_name">Время на сайте</div>
-                    <div class="indictr_int">{{Math.round(report[4])}} сек.</div>
-                </div>
-                <div class="indictr card">
-                    <div class="indictr_name">Показатель отказов</div>
-                    <div class="indictr_int">{{Math.round(report[3])}} %</div>
-                </div>      
-                <div class="indictr card">
-                    <div class="indictr_name">Новые посетители, %</div>
-                    <div class="indictr_int">{{Math.round(report[5])}} %</div>
-                </div>               
-            </div>
         </div>
     </div>
 </template>

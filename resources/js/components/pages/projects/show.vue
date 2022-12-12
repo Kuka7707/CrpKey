@@ -54,7 +54,7 @@
             <div>
                 <img ref="header" src="/logo.svg" alt="">
                 <div ref="header_title" class="report_title mt-3">Отчет по рекламе {{profileName}}</div>
-                <div ref="header_text" class="report_date">Данные сформированы за период {{ start_date }} - {{ finish_date }}</div>
+                <div ref="header_text" class="report_date">Отчёт сформирован за период {{ start_date }} - {{ finish_date }}</div>
             </div>
 
             <div class="report_main">
@@ -161,6 +161,24 @@
                 <div ref="behavior">
                     <div ref="behavior_title" class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
                     <Behavior :report="report" />
+                </div>
+                <div class="report_main_indicators">
+                    <div class="indictr card">
+                        <div class="indictr_name">Глубина просмотров</div>
+                        <div class="indictr_int">{{Math.round(report[2])}}</div>
+                    </div>
+                    <div class="indictr card">
+                        <div class="indictr_name">Время на сайте</div>
+                        <div class="indictr_int">{{Math.round(report[4])}} сек.</div>
+                    </div>
+                    <div class="indictr card">
+                        <div class="indictr_name">Показатель отказов</div>
+                        <div class="indictr_int">{{Math.round(report[3])}} %</div>
+                    </div>      
+                    <div class="indictr card">
+                        <div class="indictr_name">Новые посетители, %</div>
+                        <div class="indictr_int">{{Math.round(report[5])}} %</div>
+                    </div>               
                 </div>
 
             </div>
@@ -338,7 +356,7 @@ export default {
         async downloadPdf(){
             this.load = true
             let headImg, konversImg, trafficImg, deviceImg, behaviorImg
-            const doc = new jsPDF('landscape');
+            const doc = new jsPDF();
 
             var canvasHead = document.createElement('canvas');
             canvasHead.setAttribute('width', 1116);
@@ -392,50 +410,55 @@ export default {
             doc.addImage(headImg,'JPEG',80,20);
             doc.text(this.$refs.header_title.innerHTML, 40, 50)
             doc.text(this.$refs.header_text.innerHTML, 40, 60)
-            doc.text(this.$refs.main_title.innerHTML, 40, 80)
-            doc.text(this.$refs.main_visit.innerHTML, 40, 90)
-            doc.text(this.$refs.main_visit_int.innerHTML, 80, 90)
-            doc.text(this.$refs.main_pros.innerHTML, 40, 100)
-            doc.text(this.$refs.main_pros_int.innerHTML, 80, 100)
-            doc.text(this.$refs.main_glub.innerHTML, 40, 110)
-            doc.text(this.$refs.main_glub_int.innerHTML, 100, 110)
-            doc.text(this.$refs.main_otkaz.innerHTML, 40, 120)
-            doc.text(this.$refs.main_otkaz_int.innerHTML, 100, 120)
-            doc.text(this.$refs.main_time.innerHTML, 40, 130)
-            doc.text(this.$refs.main_time_int.innerHTML, 100, 130)
-            doc.text(this.$refs.main_new.innerHTML, 40, 140)
-            doc.text(this.$refs.main_new_int.innerHTML, 100, 140)
+
+            doc.text(this.$refs.main_title.innerHTML, 40, 100)
+            doc.text(this.$refs.main_visit.innerHTML, 40, 120)
+            doc.text(this.$refs.main_visit_int.innerHTML, 80, 120)
+            doc.text(this.$refs.main_pros.innerHTML, 40, 130)
+            doc.text(this.$refs.main_pros_int.innerHTML, 80, 130)
+            doc.text(this.$refs.main_glub.innerHTML, 40, 140)
+            doc.text(this.$refs.main_glub_int.innerHTML, 100, 140)
+            doc.text(this.$refs.main_otkaz.innerHTML, 40, 150)
+            doc.text(this.$refs.main_otkaz_int.innerHTML, 100, 150)
+            doc.text(this.$refs.main_time.innerHTML, 40, 160)
+            doc.text(this.$refs.main_time_int.innerHTML, 100, 160)
+            doc.text(this.$refs.main_new.innerHTML, 40, 170)
+            doc.text(this.$refs.main_new_int.innerHTML, 100, 170)
             
             doc.addPage()
             doc.text(this.$refs.konvers_title.innerHTML, 40, 10)
-            doc.addImage(konversImg,'JPEG',10,15,280,180);
-
-            doc.addPage()
+            doc.addImage(konversImg,'JPEG',10,15,190,height-180);
             for(let i = 0; i < this.goals.length; i++){
-                doc.text(this.goals[i].name, 40, (i+1)*10)
-                doc.text(String(this.goalsVisits[i]), 130, (i+1)*10)
-            }
+                doc.text(this.goals[i].name, 40, (i+15)*10)
+                doc.text(String(this.goalsVisits[i]), 130, (i+15)*10)
+            }            
 
             doc.addPage()
             doc.text(this.$refs.traffic_title.innerHTML, 40, 10)
-            doc.addImage(trafficImg,'JPEG',10,15,280,235);
-
-            doc.addPage()
+            doc.addImage(trafficImg,'JPEG',10,15,190,height-180);
             for(let i = 0; i < this.traffics.length; i++){
-                doc.text(this.traffics[i].dimensions[0].name, 40, (i+1)*10)
-                doc.text(String(this.traffics[i].metrics[0]), 100, (i+1)*10)
+                doc.text(this.traffics[i].dimensions[0].name, 40, (i+15)*10)
+                doc.text(String(this.traffics[i].metrics[0]), 100, (i+15)*10)
             }
             
             doc.addPage()
             doc.text(this.$refs.device_title.innerHTML, 40, 10)
-            doc.addImage(deviceImg,'JPEG',10,15,280,120);
+            doc.addImage(deviceImg,'JPEG',10,15,190,70);
             for(let i = 0; i < this.demis.length; i++){
-                doc.text(this.demis[i].dimensions[0].name, 40, (i+14)*10)
-                doc.text(String(this.demis[i].metrics[0]), 100, (i+14)*10)
+                doc.text(this.demis[i].dimensions[0].name, 40, (i+10)*10)
+                doc.text(String(this.demis[i].metrics[0]), 100, (i+10)*10)
             }
 
             doc.addPage()
-            doc.addImage(behaviorImg,'JPEG',10,1,280,220);
+            doc.addImage(behaviorImg,'JPEG',10,1,190,height-190);
+            doc.text(this.$refs.main_glub.innerHTML, 40, 130)
+            doc.text(this.$refs.main_glub_int.innerHTML, 100, 130)
+            doc.text(this.$refs.main_time.innerHTML, 40, 140)
+            doc.text(this.$refs.main_time_int.innerHTML, 100, 140)
+            doc.text(this.$refs.main_otkaz.innerHTML, 40, 150)
+            doc.text(this.$refs.main_otkaz_int.innerHTML, 100, 150)
+            doc.text(this.$refs.main_new.innerHTML, 40, 160)
+            doc.text(this.$refs.main_new_int.innerHTML, 100, 160)
 
             doc.save(`Отчет ${this.profileName} за ${this.start_date}-${this.finish_date}.pdf`);
             this.load = false
