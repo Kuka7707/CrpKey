@@ -54,7 +54,7 @@
             <div>
                 <img ref="header" src="/logo.svg" alt="">
                 <div ref="header_title" class="report_title mt-3">Отчет по рекламе {{profileName}}</div>
-                <div ref="header_text" class="report_date">Отчёт сформирован за период {{ start_date }} - {{ finish_date }}</div>
+                <div ref="header_text" class="report_date">Отчёт сформирован за период {{ moment(start_date).format('DD.MM.YYYY') }} - {{ moment(finish_date).format('DD.MM.YYYY') }}</div>
             </div>
 
             <div class="report_main">
@@ -158,9 +158,11 @@
                     <hr>
                 </div>
 
-                <div ref="behavior">
+                <div>
                     <div ref="behavior_title" class="report_title mt-5">Яндекс Метрика. Поведение пользователей</div>
-                    <Behavior :report="report" />
+                    <div ref="behavior">
+                        <Behavior :report="report" />
+                    </div>
                 </div>
                 <div class="report_main_indicators">
                     <div class="indictr card">
@@ -407,58 +409,69 @@ export default {
             doc.addFont("MyFont.ttf", "MyFont", "normal");
             doc.setFont("MyFont");
             
-            doc.addImage(headImg,'JPEG',80,20);
-            doc.text(this.$refs.header_title.innerHTML, 40, 50)
-            doc.text(this.$refs.header_text.innerHTML, 40, 60)
+            doc.addImage(headImg,'JPEG',15,20);
+            doc.text(this.$refs.header_title.innerHTML, 15, 50)
+            doc.text(this.$refs.header_text.innerHTML, 15, 60)
 
-            doc.text(this.$refs.main_title.innerHTML, 40, 100)
-            doc.text(this.$refs.main_visit.innerHTML, 40, 120)
-            doc.text(this.$refs.main_visit_int.innerHTML, 80, 120)
-            doc.text(this.$refs.main_pros.innerHTML, 40, 130)
-            doc.text(this.$refs.main_pros_int.innerHTML, 80, 130)
-            doc.text(this.$refs.main_glub.innerHTML, 40, 140)
+            doc.setFontSize(20);
+            doc.text(this.$refs.main_title.innerHTML, 15, 100)
+            doc.setFontSize(14);
+            doc.text(this.$refs.main_visit.innerHTML, 15, 120)
+            doc.text(this.$refs.main_visit_int.innerHTML, 100, 120)
+            doc.text(this.$refs.main_pros.innerHTML, 15, 130)
+            doc.text(this.$refs.main_pros_int.innerHTML, 100, 130)
+            doc.text(this.$refs.main_glub.innerHTML, 15, 140)
             doc.text(this.$refs.main_glub_int.innerHTML, 100, 140)
-            doc.text(this.$refs.main_otkaz.innerHTML, 40, 150)
+            doc.text(this.$refs.main_otkaz.innerHTML, 15, 150)
             doc.text(this.$refs.main_otkaz_int.innerHTML, 100, 150)
-            doc.text(this.$refs.main_time.innerHTML, 40, 160)
+            doc.text(this.$refs.main_time.innerHTML, 15, 160)
             doc.text(this.$refs.main_time_int.innerHTML, 100, 160)
-            doc.text(this.$refs.main_new.innerHTML, 40, 170)
+            doc.text(this.$refs.main_new.innerHTML, 15, 170)
             doc.text(this.$refs.main_new_int.innerHTML, 100, 170)
             
             doc.addPage()
-            doc.text(this.$refs.konvers_title.innerHTML, 40, 10)
-            doc.addImage(konversImg,'JPEG',10,15,190,height-180);
+            doc.setFontSize(20);
+            doc.text(this.$refs.konvers_title.innerHTML, 15, 30)
+            doc.setFontSize(14);
+            doc.addImage(konversImg,'JPEG',10,40,190,height-180);
             for(let i = 0; i < this.goals.length; i++){
-                doc.text(this.goals[i].name, 40, (i+15)*10)
-                doc.text(String(this.goalsVisits[i]), 130, (i+15)*10)
+                doc.text(this.goals[i].name, 15, (i+17)*10)
+                doc.text(String(this.goalsVisits[i]), 130, (i+17)*10)
             }            
 
             doc.addPage()
-            doc.text(this.$refs.traffic_title.innerHTML, 40, 10)
-            doc.addImage(trafficImg,'JPEG',10,15,190,height-180);
+            doc.setFontSize(20);
+            doc.text(this.$refs.traffic_title.innerHTML, 15, 30)
+            doc.setFontSize(14);
+            doc.addImage(trafficImg,'JPEG',10,40,190,height-180);
             for(let i = 0; i < this.traffics.length; i++){
-                doc.text(this.traffics[i].dimensions[0].name, 40, (i+15)*10)
-                doc.text(String(this.traffics[i].metrics[0]), 100, (i+15)*10)
+                doc.text(this.traffics[i].dimensions[0].name, 15, (i+17)*10)
+                doc.text(String(this.traffics[i].metrics[0]), 100, (i+17)*10)
             }
             
             doc.addPage()
-            doc.text(this.$refs.device_title.innerHTML, 40, 10)
-            doc.addImage(deviceImg,'JPEG',10,15,190,70);
+            doc.setFontSize(20);
+            doc.text(this.$refs.device_title.innerHTML, 15, 30)
+            doc.setFontSize(14);
+            doc.addImage(deviceImg,'JPEG',10,40,190,70);
             for(let i = 0; i < this.demis.length; i++){
-                doc.text(this.demis[i].dimensions[0].name, 40, (i+10)*10)
-                doc.text(String(this.demis[i].metrics[0]), 100, (i+10)*10)
+                doc.text(this.demis[i].dimensions[0].name, 15, (i+13)*10)
+                doc.text(String(this.demis[i].metrics[0]), 100, (i+13)*10)
             }
 
             doc.addPage()
-            doc.addImage(behaviorImg,'JPEG',10,1,190,height-190);
-            doc.text(this.$refs.main_glub.innerHTML, 40, 130)
-            doc.text(this.$refs.main_glub_int.innerHTML, 100, 130)
-            doc.text(this.$refs.main_time.innerHTML, 40, 140)
-            doc.text(this.$refs.main_time_int.innerHTML, 100, 140)
-            doc.text(this.$refs.main_otkaz.innerHTML, 40, 150)
-            doc.text(this.$refs.main_otkaz_int.innerHTML, 100, 150)
-            doc.text(this.$refs.main_new.innerHTML, 40, 160)
-            doc.text(this.$refs.main_new_int.innerHTML, 100, 160)
+            doc.setFontSize(20);
+            doc.text(this.$refs.behavior_title.innerHTML, 15, 30)
+            doc.setFontSize(14);
+            doc.addImage(behaviorImg,'JPEG',10,40,190,height-200);
+            doc.text(this.$refs.main_glub.innerHTML, 15, 160)
+            doc.text(this.$refs.main_glub_int.innerHTML, 100, 160)
+            doc.text(this.$refs.main_time.innerHTML, 15, 170)
+            doc.text(this.$refs.main_time_int.innerHTML, 100, 170)
+            doc.text(this.$refs.main_otkaz.innerHTML, 15, 180)
+            doc.text(this.$refs.main_otkaz_int.innerHTML, 100, 180)
+            doc.text(this.$refs.main_new.innerHTML, 15, 190)
+            doc.text(this.$refs.main_new_int.innerHTML, 100, 190)
 
             doc.save(`Отчет ${this.profileName} за ${this.start_date}-${this.finish_date}.pdf`);
             this.load = false

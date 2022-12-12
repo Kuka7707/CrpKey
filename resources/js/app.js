@@ -3,10 +3,12 @@ require('./bootstrap');
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { BootstrapVue } from 'bootstrap-vue'
+import moment from 'moment'
 
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
+Vue.prototype.moment = moment
 
 
 import App from './components/App.vue';
