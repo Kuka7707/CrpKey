@@ -1,5 +1,4 @@
 <template>
-    <div>
         <div class="report_stolb">
             <div class="report_stolb_diagram">
                 <Bar
@@ -14,30 +13,7 @@
                     :height="height"
                 />
             </div>
-            
-            <div class="indictr_name">Целевые визиты</div>
-            <div class="report_main_indicators">
-                <div class="indictr card" v-for="goal in goals" :key="goal.id">
-                    <div class="indictr_name">{{goal.name}}</div>
-                    <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
-                </div>
-            </div>
-
         </div>
-        
-        <div class="indictr_name">Конверсии, %</div>
-            <div class="report_indicators">
-                <div class="indictr card" v-for="goal in goals" :key="goal.id">
-                    <div class="indictr_name">{{goal.name}}</div>
-                    <div class="indictr_int">{{Math.round(goalsConvs[goals.indexOf(goal)])}} %</div>
-                </div>
-            </div>
-        <div class="report_descs">
-            <p class="report_desc">Целевые визиты - Количество визитов, достигших цели.</p>
-            <p class="report_desc">Конверсия - Доля целевых визитов в общемчисле визитов.</p>
-            <p class="report_desc">CPA - Стоимость одного целевого визита. Как считается: Расходы / Целевые визиты.</p>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -89,7 +65,7 @@ export default {
         },
         height: {
             type: Number,
-            default: 500
+            default: 600
         },
         cssClasses: {
             default: '',

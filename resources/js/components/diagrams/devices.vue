@@ -14,18 +14,6 @@
                     :height="height"
                 />
             </div>
-            <div class="report_main_indicators">
-                <div class="indictr card" v-for="dem in demis" :key="dem.dimensions[0].id">
-                    <div v-if="dem.dimensions[0].name === 'Smartphones'" class="indictr_name">Смартфоны</div>
-                    <div v-else-if="dem.dimensions[0].name === 'PC'" class="indictr_name">ПК</div>
-                    <div v-else-if="dem.dimensions[0].name === 'Tablets'" class="indictr_name">Планшет</div>
-                    <div v-else-if="dem.dimensions[0].name === 'TV'" class="indictr_name">ТВ</div>
-                    
-                    <div v-else class="indictr_name">{{dem.dimensions[0].name}}</div>
-
-                    <div class="indictr_int">{{dem.metrics[0]}}</div>
-                </div>                                           
-            </div>
         </div>
     </div>
 </template>

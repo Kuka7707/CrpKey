@@ -92,18 +92,69 @@
                     <div ref="konvers">
                         <Konvers :goals='goals' :goalsVisits='goalsVisits' :goalsConvs="goalsConvs" />
                     </div>
+                    <div class="indictr_name">Целевые визиты</div>
+                    <div class="report_main_indicators">
+                        <div class="indictr card" v-for="goal in goals" :key="goal.id">
+                            <div class="indictr_name">{{goal.name}}</div>
+                            <div class="indictr_int">{{goalsVisits[goals.indexOf(goal)]}}</div>
+                        </div>
+                    </div>
+                    <div class="indictr_name">Конверсии, %</div>
+                    <div class="report_indicators">
+                        <div class="indictr card" v-for="goal in goals" :key="goal.id">
+                            <div class="indictr_name">{{goal.name}}</div>
+                            <div class="indictr_int">{{Math.round(goalsConvs[goals.indexOf(goal)])}} %</div>
+                        </div>
+                    </div>
+                    <div class="report_descs">
+                        <p class="report_desc">Целевые визиты - Количество визитов, достигших цели.</p>
+                        <p class="report_desc">Конверсия - Доля целевых визитов в общемчисле визитов.</p>
+                        <p class="report_desc">CPA - Стоимость одного целевого визита. Как считается: Расходы / Целевые визиты.</p>
+                    </div>
                     <hr>
                 </div>
 
-                <div ref="traffic">
+                <div>
                     <div ref="traffic_title" class="report_title mt-5">Яндекс Метрика. Источники трафика</div>
-                    <Traffic :traffics="traffics" />
+                    <div ref="traffic">
+                        <Traffic :traffics="traffics" />
+                    </div>
+                    <div class="report_main_indicators">
+                        <div class="indictr card" v-for="traffic in traffics" :key="traffic.index">
+                            <div class="indictr_item">
+                                <div v-if="traffic.dimensions[0].name == 'Other ad: identified by tags'" class="indictr_name">Другая реклама</div>
+                                <div v-else class="indictr_name">{{traffic.dimensions[0].name}}</div>
+
+                                <div v-if="traffic.dimensions[0].url" class="indictr_desc">Переходы по ссылкам на сайтах</div>
+                                <div v-else-if="traffic.dimensions[0].name == 'Google' || traffic.dimensions[0].name == 'Yandex' || traffic.dimensions[0].name == 'Baidu' || traffic.dimensions[0].name == 'Bing' || traffic.dimensions[0].name == 'Ukr.net'" class="indictr_desc">Переходы из поисковых систем</div>
+                                <div v-else-if="traffic.dimensions[0].name == 'instagram.com' || traffic.dimensions[0].name == 'Facebook' || traffic.dimensions[0].name == 'VKontakte' || traffic.dimensions[0].name == 'Telegram'" class="indictr_desc">Переходы из социальных сетей</div>
+                                <div v-else-if="traffic.dimensions[0].name == 'Google Ads'" class="indictr_desc">Переходы по рекламе</div>
+                                <div v-else class="indictr_desc">Переходы по рекламе</div>
+                            </div>
+
+                            <div class="indictr_int">{{traffic.metrics[0]}}</div>
+                        </div>                  
+                    </div>
                     <hr>
                 </div>
 
-                <div ref="device">
+                <div>
                     <div ref="device_title" class="report_title mt-5">Яндекс Метрика. Типы устройств</div>
-                    <Devices :demis="demis" />
+                    <div ref="device">
+                        <Devices :demis="demis" />
+                    </div>
+                    <div class="report_main_indicators">
+                        <div class="indictr card" v-for="dem in demis" :key="dem.dimensions[0].id">
+                            <div v-if="dem.dimensions[0].name === 'Smartphones'" class="indictr_name">Смартфоны</div>
+                            <div v-else-if="dem.dimensions[0].name === 'PC'" class="indictr_name">ПК</div>
+                            <div v-else-if="dem.dimensions[0].name === 'Tablets'" class="indictr_name">Планшет</div>
+                            <div v-else-if="dem.dimensions[0].name === 'TV'" class="indictr_name">ТВ</div>
+                            
+                            <div v-else class="indictr_name">{{dem.dimensions[0].name}}</div>
+
+                            <div class="indictr_int">{{dem.metrics[0]}}</div>
+                        </div>                                           
+                    </div>
                     <hr>
                 </div>
 
@@ -257,6 +308,7 @@ export default {
                 }
             }).then(res => {
                 this.goalsVisits = res.data.totals
+                console.log(this.goalsVisits)
             }).catch(err => {
                 console.log(err)
             })
@@ -294,19 +346,19 @@ export default {
 
             var canvasKonvers = document.createElement('canvas');
             canvasKonvers.setAttribute('width', 1116);
-            canvasKonvers.setAttribute('height', 130);
+            canvasKonvers.setAttribute('height', 600);
 
             var canvasTraffic = document.createElement('canvas');
             canvasTraffic.setAttribute('width', 1116);
-            canvasTraffic.setAttribute('height', 742);
+            canvasTraffic.setAttribute('height', 600);
 
             var canvasDevice = document.createElement('canvas');
             canvasDevice.setAttribute('width', 1116);
-            canvasDevice.setAttribute('height', 450);
+            canvasDevice.setAttribute('height', 400);
 
             var canvasBehavior = document.createElement('canvas');
             canvasBehavior.setAttribute('width', 1116);
-            canvasBehavior.setAttribute('height', 500);
+            canvasBehavior.setAttribute('height', 665);
 
             await html2canvas(this.$refs.header, {head: canvasHead}).then(head => {
                 headImg = head.toDataURL("image/jpeg");
@@ -356,14 +408,36 @@ export default {
             
             doc.addPage()
             doc.text(this.$refs.konvers_title.innerHTML, 40, 10)
-            doc.addImage(konversImg,'JPEG',1,15,280,200);
+            doc.addImage(konversImg,'JPEG',10,15,280,180);
+
             doc.addPage()
-            doc.addImage(trafficImg,'JPEG',1,1,280,200);
+            for(let i = 0; i < this.goals.length; i++){
+                doc.text(this.goals[i].name, 40, (i+1)*10)
+                doc.text(String(this.goalsVisits[i]), 130, (i+1)*10)
+            }
+
             doc.addPage()
-            doc.addImage(deviceImg,'JPEG',1,1,280,150);
+            doc.text(this.$refs.traffic_title.innerHTML, 40, 10)
+            doc.addImage(trafficImg,'JPEG',10,15,280,235);
+
             doc.addPage()
-            doc.addImage(behaviorImg,'JPEG',1,1,280,150);
-            doc.save(`Отчет ${this.profileName}.pdf`);
+            for(let i = 0; i < this.traffics.length; i++){
+                doc.text(this.traffics[i].dimensions[0].name, 40, (i+1)*10)
+                doc.text(String(this.traffics[i].metrics[0]), 100, (i+1)*10)
+            }
+            
+            doc.addPage()
+            doc.text(this.$refs.device_title.innerHTML, 40, 10)
+            doc.addImage(deviceImg,'JPEG',10,15,280,120);
+            for(let i = 0; i < this.demis.length; i++){
+                doc.text(this.demis[i].dimensions[0].name, 40, (i+14)*10)
+                doc.text(String(this.demis[i].metrics[0]), 100, (i+14)*10)
+            }
+
+            doc.addPage()
+            doc.addImage(behaviorImg,'JPEG',10,1,280,220);
+
+            doc.save(`Отчет ${this.profileName} за ${this.start_date}-${this.finish_date}.pdf`);
             this.load = false
         },
         async downloadDoc(){
@@ -601,7 +675,6 @@ export default {
                     }).then(res => {
                         this.report = res.data.totals
                         this.demis = res.data.data
-                        console.log(this.demis)
                     }).catch(err => console.log(err))
                         .finally(() => {
                             this.load = false
