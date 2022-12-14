@@ -178,7 +178,7 @@ export default {
         postProject(){
             var conf = {
                 method: 'post',
-                url: 'http://crpkey/api/projects',
+                url: '/api/projects',
                 headers: { 
                     'Content-Type': 'application/json'
                 },
@@ -229,7 +229,7 @@ export default {
         postIntegr(){
             var conf = {
                 method: 'post',
-                url: 'http://crpkey/api/integrations',
+                url: '/api/integrations',
                 headers: { 
                     'Content-Type': 'application/json'
                 },
