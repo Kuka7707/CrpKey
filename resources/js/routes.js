@@ -4,13 +4,13 @@ const router = new VueRouter({
     mode: 'history',
     routes: [{
             path: '/',
-            name: 'home',
-            component: require('./components/pages/Home.vue').default,
-        },
-        {
-            path: '/projects',
             name: 'projects',
             component: require('./components/pages/projects/index.vue').default
+        },
+        {
+            path: '/home',
+            name: 'home',
+            component: require('./components/pages/Home.vue').default,
         },
         {
             path: '/projects/integration/:slug',
@@ -20,7 +20,7 @@ const router = new VueRouter({
         },
         {
             path:'/*',
-            component: require('./components/pages/Home.vue').default
+            component: require('./components/pages/projects/index.vue').default
 
         }
     ]

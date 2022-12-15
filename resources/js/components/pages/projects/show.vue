@@ -295,11 +295,11 @@ export default {
                 console.log(err)
             })
         },
-        getGoals() {
+        async getGoals() {
             this.goals = []
             this.goals_stirng = ''
             this.goalVisits_stirng = ''
-            axios.get(`https://api-metrika.yandex.net/management/v1/counter/${this.profile}/goals`, {
+            await axios.get(`https://api-metrika.yandex.net/management/v1/counter/${this.profile}/goals`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
@@ -320,9 +320,9 @@ export default {
                 this.getConvers()
             })
         },
-        getGoalVisits() {
+        async getGoalVisits() {
             this.goalsVisits = []
-            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goalVisits_stirng}&date1=${this.start_date}&date2=${this.finish_date}&ids=${this.profile}`, {
+            await axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goalVisits_stirng}&date1=${this.start_date}&date2=${this.finish_date}&ids=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
@@ -333,9 +333,9 @@ export default {
                 console.log(err)
             })
         },
-        getConvers() {
+        async getConvers() {
             this.goalsConvs = []
-            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goals_stirng}&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+            await axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=${this.goals_stirng}&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
@@ -345,9 +345,9 @@ export default {
                 console.log(err)
             })
         },
-        getTraffic() {
+        async getTraffic() {
             this.traffics = []
-            axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=ym:s:visits&dimensions=ym:s:lastSignSourceEngine&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
+            await axios.get(`https://api-metrika.yandex.net/stat/v1/data?metrics=ym:s:visits&dimensions=ym:s:lastSignSourceEngine&date1=${this.start_date}&date2=${this.finish_date}&group=day&id=${this.profile}`, {
                 headers: {
                     'Authorization': `OAuth ${this.integr.auth_token}`,
                 }
@@ -453,7 +453,7 @@ export default {
             doc.setFontSize(20);
             doc.text(this.$refs.device_title.innerHTML, 15, 30)
             doc.setFontSize(14);
-            doc.addImage(deviceImg,'JPEG',10,40,190,70);
+            doc.addImage(deviceImg,'JPEG',10,40,190,60);
             for(let i = 0; i < this.demis.length; i++){
                 doc.text(this.demis[i].dimensions[0].name, 15, (i+13)*10)
                 doc.text(String(this.demis[i].metrics[0]), 100, (i+13)*10)
@@ -713,9 +713,9 @@ export default {
                         this.demis = res.data.data
                     }).catch(err => console.log(err))
                         .finally(() => {
-                            this.load = false
                             this.getGoals()
                             this.getTraffic()
+                            this.load = false
                         })
             }
 
